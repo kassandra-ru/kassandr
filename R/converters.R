@@ -448,6 +448,9 @@ convert_m2_m2_sa_xlsx = function(path_to_source =
 convert_ind_okved2_xlsx = function(path_to_source =
                                       "http://www.gks.ru/free_doc/new_site/business/prom/ind_okved2.xlsx",
                                     access_date = Sys.Date()) {
+  
+  .Deprecated("convert_ind_okved2_xls")
+  
   indprod = rio::import(path_to_source, skip = 2, sheet = 1)
   indprod_vector = t(indprod[2, 3:ncol(indprod)])
 
@@ -464,8 +467,66 @@ convert_ind_okved2_xlsx = function(path_to_source =
   check_conversion(indprod_tsibble)
   return(indprod_tsibble)
 }
+                            
+#' Converts Ind_sub-2018.xls file from rosstat to tibble
+#' 
+#' Written by: Vladimir Omelyusik
+#'
+#' @param path_to_source name of the original ind_okved2.xlsx file
+#' @param access_date date of access is appended to every observation
+#'
+#' @return tibble
+#' @export
+#' @examples
+#' \donttest{
+#' # ind = convert_ind_okved2_xls()
+#' # new link https://rosstat.gov.ru/storage/mediabank/BYkjy3Bn/Ind_sub-2018.xls
+#' }
+#'                           
+convert_ind_okved2_xls = function(path_to_source =
+                                  "https://rosstat.gov.ru/storage/mediabank/BYkjy3Bn/Ind_sub-2018.xls",
+                                  access_date = Sys.Date()) {
+  
+  # data
+  indprod_last_year = rio::import(path_to_source, skip = 2, sheet = 1) # percent to corresp. month of prev. year
+  indprod_last_year_vector = t(indprod_last_year[2, 2:ncol(indprod_last_year)])
+  indprod_last_month = rio::import(path_to_source, skip = 2, sheet = 3) # percent to prev. month
+  indprod_last_month_vector = t(indprod_last_month[2, 2:ncol(indprod_last_month)])
+  
+  # automatic date detection
+  indprod_last_year_date = detect_date(indprod_last_year)
+  indprod_last_month_date = detect_date(indprod_last_month)
+  
+  # create series
+  indprod_ts_last_year = stats::ts(indprod_last_year_vector, start = indprod_last_year_date, frequency = 12)
+  indprod_ts_last_month = stats::ts(indprod_last_month_vector, start = indprod_last_month_date, frequency = 12)
+  df_raw = cbind(indprod_ts_last_year, indprod_ts_last_month)
+  
+  # create tsibble
+  indprod_tsibble = tsibble::as_tsibble(df_raw, pivot_longer = FALSE)
+  indprod_tsibble = dplyr::rename(indprod_tsibble, date = index, 
+                                  ind_prod_perc_last_year = indprod_ts_last_year,
+                                  ind_prod_perc_last_month = indprod_ts_last_month)
+  indprod_tsibble = dplyr::mutate(indprod_tsibble, access_date = access_date)
+  indprod_tsibble = table = dplyr::mutate_at(indprod_tsibble, 
+                                             dplyr::vars(tidyselect::starts_with("ind_prod")), as.numeric)
+  
+  check_conversion(indprod_tsibble)
+  return(indprod_tsibble)
+}
 
+detect_date = function(indprod) {
+  start_month = get_month(indprod[1, 2])
+  start_year = colnames(indprod)[2]
+  start_year = as.integer(substr(start_year, 1, 4))
+  return(c(start_year, start_month))
+}
 
+get_month = function(month) {
+  months = c("январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", 
+             "октябрь", "ноябрь", "декабрь")
+  return(which(months == month))
+}                           
 
 
 #' Converts trade.xls file from cbr to tibble
