@@ -209,6 +209,9 @@ convert_urov_12kv_doc = function(path_to_source =
 #' Converts 1-nn file from rosstat to tibble.
 #' The function uses libre office to convert .doc files.
 #' So libre office should be installed. And path to libre office should be known by the package.
+#'
+#' Probably deprecated, as rosstat started to use xlsx files.
+#'
 #' Written by: Rifat Enileev
 #'
 #' @param path_to_source name of the original 1-nn.doc file
@@ -229,6 +232,9 @@ convert_urov_12kv_doc = function(path_to_source =
 convert_1_nn_doc = function(path_to_source =
                                "http://www.gks.ru/bgd/regl/b18_02/IssWWW.exe/Stg/d010/1-08.doc",
                              access_date = Sys.Date()) {
+
+  .Deprecated("convert_1_nn_xlsx")
+
   tbl = docxtractr::read_docx(path_to_source)
   table_1 = docxtractr::docx_extract_tbl(tbl,
     tbl_number = 1, header = TRUE,
@@ -294,6 +300,90 @@ convert_1_nn_doc = function(path_to_source =
 
   return(data_tsibble)
 }
+
+
+
+
+#' Converts 1-nn xlsx file from rosstat to tibble
+#'
+#' Converts 1-nn xlsx file from rosstat to tibble
+#'
+#' Converts 1-nn xlsx file from rosstat to tibble.
+#' Written by: Rifat Enileev
+#'
+#' @param path_to_source name of the original 1-nn.doc file
+#' @param access_date date of access is appended to every observation
+#'
+#' @return tibble
+#' @export
+#' @examples
+#' \donttest{
+#' one = convert_1_nn_xlsx("https://www.gks.ru/bgd/regl/b20_02/IssWWW.exe/Stg/d010/1-07.xlsx")
+#' two = convert_1_nn_xlsx("https://www.gks.ru/bgd/regl/b20_02/IssWWW.exe/Stg/d010/1-03.xlsx")
+#' three = convert_1_nn_xlsx("https://www.gks.ru/bgd/regl/b20_02/IssWWW.exe/Stg/d010/1-11.xlsx")
+#' }
+convert_1_nn_xlsx = function(
+  path_to_source = "https://www.gks.ru/bgd/regl/b20_02/IssWWW.exe/Stg/d010/1-11.xlsx",
+  access_date = Sys.Date()) {
+
+  table_1 = rio::import(path_to_source, skip = 1, sheet = 1)
+
+  ### pattern recognition until which we subset
+  pattern = '/ percent of'
+  id_untill = which(stringr::str_detect(table_1$...1, pattern))[1]
+
+  if (id_untill >= 8){
+    table_1 = table_1[1:(id_untill-2),]
+  }
+
+
+  ncols = ncol(table_1)
+  if (ncols == 18) {
+    colnames(table_1) = c(
+      "year", "yearly", "i", "ii", "iii", "iv", "jan", "feb", "mar", "apr",
+      "may", "jun", "jul", "aug", "sep", "oct", "nov", "dec"
+    )
+  } else if (ncols == 13) {
+    colnames(table_1) = c(
+      "year", "dec", "jan", "feb", "mar", "apr", "may", "jun", "jul", "aug",
+      "sep", "oct", "nov"
+    )
+    table_1 = table_1[c(1, 3:13, 2)]
+  } else {
+    stop("Wrong number of columns in parsed doc: ", path_to_source)
+  }
+
+  # try to guess table id :)
+  id_column = dplyr::select(table_1, year) %>% dplyr::filter(stringr::str_count(year) > 10)
+  id_guess = dplyr::pull(id_column, year)[2]
+  variable_name = dplyr::case_when(
+    stringr::str_detect(id_guess, "construction activity") ~ "constr_vol_cur_price",
+    stringr::str_detect(id_guess, "Agricultural production index") ~ "agriculture",
+    stringr::str_detect(id_guess, "consolidated budget") ~ "budget",
+    stringr::str_detect(id_guess, "buildings commissioned") ~ "constr_total_area",
+    TRUE ~ "value"
+  )
+
+  table_1 = subset(table_1, year >= 1999, select = c(
+    "jan", "feb", "mar", "apr", "may", "jun",
+    "jul", "aug", "sep", "oct", "nov", "dec"
+  ))
+
+  table = dplyr::mutate_all(table_1, function(x) as.numeric(as.character(x))) %>% t() %>% as.data.frame()
+  table = tidyr::gather(table)[2]
+  table[table == ""] = NA
+  table = stats::na.omit(table)
+
+  data_ts = stats::ts(table, start = c(1999, 1), freq = 12)
+  data_tsibble = tsibble::as_tsibble(data_ts) %>% dplyr::rename(date = index, !!variable_name := value)
+  data_tsibble = dplyr::mutate(data_tsibble, access_date = access_date)
+  check_conversion(data_tsibble)
+
+  return(data_tsibble)
+}
+
+
+
 
 
 

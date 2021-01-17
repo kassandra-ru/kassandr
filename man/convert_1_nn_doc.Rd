@@ -24,6 +24,9 @@ Converts 1-nn file from rosstat to tibble
 Converts 1-nn file from rosstat to tibble.
 The function uses libre office to convert .doc files.
 So libre office should be installed. And path to libre office should be known by the package.
+
+Probably deprecated, as rosstat started to use xlsx files.
+
 Written by: Rifat Enileev
 }
 \examples{
