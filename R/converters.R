@@ -88,7 +88,15 @@ convert_tab6b_xls = function(path_to_source = "http://www.gks.ru/free_doc/new_si
                               access_date = Sys.Date(), sheet = 1) {
   data = rio::import(path_to_source, sheet = sheet)
 
-  data_vector = t(data[5, ]) %>% stats::na.omit() %>% as.numeric()
+
+  # simple choice of 4th or 5th line:
+  data_vector_line_4 = t(data[4, ]) %>% stats::na.omit() %>% as.numeric()
+  data_vector_line_5 = t(data[5, ]) %>% stats::na.omit() %>% as.numeric()
+  if (length(data_vector_line_5) > length(data_vector_line_4)) {
+    data_vector = data_vector_line_5
+  } else {
+    data_vector = data_vector_line_4
+  }
 
   data_ts = stats::ts(data_vector, start = c(2011, 1), freq = 4)
   data_tsibble = tsibble::as_tsibble(data_ts) %>% dplyr::rename(date = index, gdp_2016_price = value)
