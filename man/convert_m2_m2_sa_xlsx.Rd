@@ -6,13 +6,16 @@
 \usage{
 convert_m2_m2_sa_xlsx(
   path_to_source = "http://www.cbr.ru/vfs/statistics/credit_statistics/M2-M2_SA.xlsx",
-  access_date = Sys.Date()
+  access_date = Sys.Date(),
+  sheet = 1
 )
 }
 \arguments{
 \item{path_to_source}{name of the original m2-m2_sa.xlsx file}
 
 \item{access_date}{date of access is appended to every observation}
+
+\item{sheet}{number of sheet, 1 by default}
 }
 \value{
 tibble

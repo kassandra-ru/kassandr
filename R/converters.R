@@ -6,6 +6,7 @@
 #'
 #' @param path_to_source name of the original I_ipc.xls file
 #' @param access_date date of access is appended to every observation
+#' @param sheet number of sheet, 1 by default
 #'
 #' @return tibble
 #' @export
@@ -16,8 +17,8 @@
 #' # cpi = convert_i_ipc_xlsx()
 #' }
 convert_i_ipc_xlsx = function(path_to_source = "https://rosstat.gov.ru/storage/mediabank/HOKNtZra/i_ipc.xlsx",
-                               access_date = Sys.Date()) {
-  data = rio::import(path_to_source)
+                               access_date = Sys.Date(), sheet = 1) {
+  data = rio::import(path_to_source, sheet = sheet)
 
   data = data[5:16, -1]
   data = tidyr::gather(data, year, value)
@@ -42,6 +43,7 @@ convert_i_ipc_xlsx = function(path_to_source = "https://rosstat.gov.ru/storage/m
 #'
 #' @param path_to_source name of the original tab5a.xls file
 #' @param access_date date of access is appended to every observation
+#' @param sheet number of sheet, 1 by default
 #'
 #' @return tibble
 #' @export
@@ -50,8 +52,8 @@ convert_i_ipc_xlsx = function(path_to_source = "https://rosstat.gov.ru/storage/m
 #' tab5a = convert_tab5a_xls()
 #' }
 convert_tab5a_xls = function(path_to_source = "http://www.gks.ru/free_doc/new_site/vvp/kv/tab5a.xls",
-                              access_date = Sys.Date()) {
-  data = rio::import(path_to_source)
+                              access_date = Sys.Date(), sheet = 1) {
+  data = rio::import(path_to_source, sheet = sheet)
 
   data_vector = t(data[6, ]) %>% stats::na.omit() %>% as.numeric()
 
@@ -74,6 +76,7 @@ convert_tab5a_xls = function(path_to_source = "http://www.gks.ru/free_doc/new_si
 #'
 #' @param path_to_source name of the original tab6b.xls file
 #' @param access_date date of access is appended to every observation
+#' @param sheet number of sheet, 1 by default
 #'
 #' @return tibble
 #' @export
@@ -82,8 +85,8 @@ convert_tab5a_xls = function(path_to_source = "http://www.gks.ru/free_doc/new_si
 #' tab6b = convert_tab6b_xls()
 #' }
 convert_tab6b_xls = function(path_to_source = "http://www.gks.ru/free_doc/new_site/vvp/kv/tab6b.xls",
-                              access_date = Sys.Date()) {
-  data = rio::import(path_to_source)
+                              access_date = Sys.Date(), sheet = 1) {
+  data = rio::import(path_to_source, sheet = sheet)
 
   data_vector = t(data[5, ]) %>% stats::na.omit() %>% as.numeric()
 
@@ -105,6 +108,7 @@ convert_tab6b_xls = function(path_to_source = "http://www.gks.ru/free_doc/new_si
 #'
 #' @param path_to_source name of the original tab9.xls file
 #' @param access_date date of access is appended to every observation
+#' @param sheet number of sheet, 1 by default
 #'
 #' @return tibble
 #' @export
@@ -113,8 +117,8 @@ convert_tab6b_xls = function(path_to_source = "http://www.gks.ru/free_doc/new_si
 #' tab9 = convert_tab9_xls()
 #' }
 convert_tab9_xls = function(path_to_source = "http://www.gks.ru/free_doc/new_site/vvp/kv/tab9.xls",
-                             access_date = Sys.Date()) {
-  data = rio::import(path_to_source)
+                             access_date = Sys.Date(), sheet = 1) {
+  data = rio::import(path_to_source, sheet = sheet)
 
   data_vector = t(data[4, ]) %>% stats::na.omit() %>% as.numeric()
 
@@ -136,6 +140,7 @@ convert_tab9_xls = function(path_to_source = "http://www.gks.ru/free_doc/new_sit
 #'
 #' @param path_to_source name of the original tab9a.xls file
 #' @param access_date date of access is appended to every observation
+#' @param sheet number of sheet, 1 by default
 #'
 #' @return tibble
 #' @export
@@ -144,8 +149,8 @@ convert_tab9_xls = function(path_to_source = "http://www.gks.ru/free_doc/new_sit
 #' tab9a = convert_tab9a_xls()
 #' }
 convert_tab9a_xls = function(path_to_source = "http://www.gks.ru/free_doc/new_site/vvp/kv/tab9a.xls",
-                              access_date = Sys.Date()) {
-  data = rio::import(path_to_source)
+                              access_date = Sys.Date(), sheet = 1) {
+  data = rio::import(path_to_source, sheet = sheet)
 
   data = t(data[5, ]) %>% stats::na.omit() %>% as.numeric()
 
@@ -313,6 +318,7 @@ convert_1_nn_doc = function(path_to_source =
 #'
 #' @param path_to_source name of the original 1-nn.doc file
 #' @param access_date date of access is appended to every observation
+#' @param sheet number of sheet, 1 by default
 #'
 #' @return tibble
 #' @export
@@ -324,9 +330,9 @@ convert_1_nn_doc = function(path_to_source =
 #' }
 convert_1_nn_xlsx = function(
   path_to_source = "https://www.gks.ru/bgd/regl/b20_02/IssWWW.exe/Stg/d010/1-11.xlsx",
-  access_date = Sys.Date()) {
+  access_date = Sys.Date(), sheet = 1) {
 
-  table_1 = rio::import(path_to_source, skip = 1, sheet = 1)
+  table_1 = rio::import(path_to_source, skip = 1, sheet = sheet)
 
   ### pattern recognition until which we subset
   pattern = '/ percent of'
@@ -397,6 +403,7 @@ convert_1_nn_xlsx = function(
 #'
 #' @param path_to_source name of the original m2-m2_sa.xlsx file
 #' @param access_date date of access is appended to every observation
+#' @param sheet number of sheet, 1 by default
 #'
 #' @return tibble
 #' @export
@@ -406,8 +413,8 @@ convert_1_nn_xlsx = function(
 #' }
 convert_m2_m2_sa_xlsx = function(path_to_source =
                                     "http://www.cbr.ru/vfs/statistics/credit_statistics/M2-M2_SA.xlsx",
-                                  access_date = Sys.Date()) {
-  data = rio::import(path_to_source)
+                                  access_date = Sys.Date(), sheet = 1) {
+  data = rio::import(path_to_source, sheet = sheet)
   data = data.frame(data)
   colnames(data)[3] = "m2sa"
 
@@ -432,6 +439,7 @@ convert_m2_m2_sa_xlsx = function(path_to_source =
 #'
 #' @param path_to_source name of the original ind_okved2.xlsx file
 #' @param access_date date of access is appended to every observation
+#' @param sheet number of sheet, 1 by default
 #'
 #' @return tibble
 #' @export
@@ -447,11 +455,11 @@ convert_m2_m2_sa_xlsx = function(path_to_source =
 #'
 convert_ind_okved2_xlsx = function(path_to_source =
                                       "http://www.gks.ru/free_doc/new_site/business/prom/ind_okved2.xlsx",
-                                    access_date = Sys.Date()) {
-  
+                                    access_date = Sys.Date(), sheet = 1) {
+
   .Deprecated("convert_ind_okved2_xls")
-  
-  indprod = rio::import(path_to_source, skip = 2, sheet = 1)
+
+  indprod = rio::import(path_to_source, skip = 2, sheet = sheet)
   indprod_vector = t(indprod[2, 3:ncol(indprod)])
 
   # automatic date detection
@@ -467,9 +475,9 @@ convert_ind_okved2_xlsx = function(path_to_source =
   check_conversion(indprod_tsibble)
   return(indprod_tsibble)
 }
-                            
+
 #' Converts Ind_sub-2018.xls file from rosstat to tibble
-#' 
+#'
 #' Written by: Vladimir Omelyusik
 #'
 #' @param path_to_source name of the original ind_okved2.xlsx file
@@ -482,35 +490,35 @@ convert_ind_okved2_xlsx = function(path_to_source =
 #' # ind = convert_ind_okved2_xls()
 #' # new link https://rosstat.gov.ru/storage/mediabank/BYkjy3Bn/Ind_sub-2018.xls
 #' }
-#'                           
+#'
 convert_ind_okved2_xls = function(path_to_source =
                                   "https://rosstat.gov.ru/storage/mediabank/BYkjy3Bn/Ind_sub-2018.xls",
                                   access_date = Sys.Date()) {
-  
+
   # data
   indprod_last_year = rio::import(path_to_source, skip = 2, sheet = 1) # percent to corresp. month of prev. year
   indprod_last_year_vector = t(indprod_last_year[2, 2:ncol(indprod_last_year)])
   indprod_last_month = rio::import(path_to_source, skip = 2, sheet = 3) # percent to prev. month
   indprod_last_month_vector = t(indprod_last_month[2, 2:ncol(indprod_last_month)])
-  
+
   # automatic date detection
   indprod_last_year_date = detect_date(indprod_last_year)
   indprod_last_month_date = detect_date(indprod_last_month)
-  
+
   # create series
   indprod_ts_last_year = stats::ts(indprod_last_year_vector, start = indprod_last_year_date, frequency = 12)
   indprod_ts_last_month = stats::ts(indprod_last_month_vector, start = indprod_last_month_date, frequency = 12)
   df_raw = cbind(indprod_ts_last_year, indprod_ts_last_month)
-  
+
   # create tsibble
   indprod_tsibble = tsibble::as_tsibble(df_raw, pivot_longer = FALSE)
-  indprod_tsibble = dplyr::rename(indprod_tsibble, date = index, 
+  indprod_tsibble = dplyr::rename(indprod_tsibble, date = index,
                                   ind_prod_perc_last_year = indprod_ts_last_year,
                                   ind_prod_perc_last_month = indprod_ts_last_month)
   indprod_tsibble = dplyr::mutate(indprod_tsibble, access_date = access_date)
-  indprod_tsibble = table = dplyr::mutate_at(indprod_tsibble, 
+  indprod_tsibble = table = dplyr::mutate_at(indprod_tsibble,
                                              dplyr::vars(tidyselect::starts_with("ind_prod")), as.numeric)
-  
+
   check_conversion(indprod_tsibble)
   return(indprod_tsibble)
 }
@@ -523,10 +531,10 @@ detect_date = function(indprod) {
 }
 
 get_month = function(month) {
-  months = c("январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь", 
+  months = c("январь", "февраль", "март", "апрель", "май", "июнь", "июль", "август", "сентябрь",
              "октябрь", "ноябрь", "декабрь")
   return(which(months == month))
-}                           
+}
 
 
 #' Converts trade.xls file from cbr to tibble
@@ -538,6 +546,7 @@ get_month = function(month) {
 #'
 #' @param path_to_source name of the original trade.xls file
 #' @param access_date date of access is appended to every observation
+#' @param sheet number of sheet, 1 by default
 #'
 #' @return tibble
 #' @export
@@ -547,8 +556,8 @@ get_month = function(month) {
 #' }
 convert_trade_xls = function(path_to_source =
                                 "https://www.cbr.ru/vfs/statistics/credit_statistics/trade/trade.xls",
-                              access_date = Sys.Date()) {
-  data = rio::import(path_to_source)
+                              access_date = Sys.Date(), sheet = 1) {
+  data = rio::import(path_to_source, sheet = sheet)
   colnames(data)[c(1, 2, 8)] = c("date", "import", "export")
   namelist = c(
     "январь", "февраль", "март", "апрель", "май", "июнь", "июль",
@@ -575,6 +584,7 @@ convert_trade_xls = function(path_to_source =
 #'
 #' @param path_to_source name of the original tab2.29.xls file
 #' @param access_date date of access is appended to every observation
+#' @param sheet number of sheet, 1 by default
 #'
 #' @return tibble
 #' @export
@@ -582,10 +592,10 @@ convert_trade_xls = function(path_to_source =
 #' # no yet - needs rar extraction!
 convert_tab229_xls = function(path_to_source =
                                  "http://www.gks.ru/free_doc/doc_2018/bul_dr/trud/ors-2018-3kv.rar",
-                               access_date = Sys.Date()) {
+                               access_date = Sys.Date(), sheet = 1) {
   # here we need rar extraction !!!!
 
-  data = rio::import(path_to_source)
+  data = rio::import(path_to_source, sheet = sheet)
   data_vector = data[4:24, 5] # WILL WORK IN THE FUTURE????
   data_ts = stats::ts(data_vector, start = c(2017, 1), freq = 12)
   data_tsibble = tsibble::as_tsibble(data_ts)
@@ -684,6 +694,7 @@ convert_reserves = function(path_to_source = "http://www.cbr.ru/hd_base/mrrf/mrr
 #' Written by Rifat Eniliev
 #' @param path_to_source name of the original 1-06-0.xls file
 #' @param access_date date of access is appended to every observation
+#' @param sheet number of sheet, 1 by default
 #'
 #' @return tibble
 #' @export
@@ -702,8 +713,8 @@ convert_reserves = function(path_to_source = "http://www.cbr.ru/hd_base/mrrf/mrr
 #' #   return(data_tsibble)
 #' # }
 convert_1_06_0_xlsx = function(path_to_source = "http://www.gks.ru/bgd/regl/b20_02/IssWWW.exe/Stg/d010/1-06-0.xlsx",
-                                access_date = Sys.Date()) {
-  data = rio::import(path_to_source)
+                                access_date = Sys.Date(), sheet = 1) {
+  data = rio::import(path_to_source, sheet = sheet)
   names(data)[1] = "year_col"
   # ниже для уровней
   # ind_lvl_start = which(

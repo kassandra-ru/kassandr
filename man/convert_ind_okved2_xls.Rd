@@ -25,5 +25,5 @@ Written by: Vladimir Omelyusik
 # ind = convert_ind_okved2_xls()
 # new link https://rosstat.gov.ru/storage/mediabank/BYkjy3Bn/Ind_sub-2018.xls
 }
-                          
+
 }

@@ -6,13 +6,16 @@
 \usage{
 convert_ind_okved2_xlsx(
   path_to_source = "http://www.gks.ru/free_doc/new_site/business/prom/ind_okved2.xlsx",
-  access_date = Sys.Date()
+  access_date = Sys.Date(),
+  sheet = 1
 )
 }
 \arguments{
 \item{path_to_source}{name of the original ind_okved2.xlsx file}
 
 \item{access_date}{date of access is appended to every observation}
+
+\item{sheet}{number of sheet, 1 by default}
 }
 \value{
 tibble

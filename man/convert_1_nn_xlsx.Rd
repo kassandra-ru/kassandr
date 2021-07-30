@@ -6,13 +6,16 @@
 \usage{
 convert_1_nn_xlsx(
   path_to_source = "https://www.gks.ru/bgd/regl/b20_02/IssWWW.exe/Stg/d010/1-11.xlsx",
-  access_date = Sys.Date()
+  access_date = Sys.Date(),
+  sheet = 1
 )
 }
 \arguments{
 \item{path_to_source}{name of the original 1-nn.doc file}
 
 \item{access_date}{date of access is appended to every observation}
+
+\item{sheet}{number of sheet, 1 by default}
 }
 \value{
 tibble

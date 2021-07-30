@@ -6,13 +6,16 @@
 \usage{
 convert_i_ipc_xlsx(
   path_to_source = "https://rosstat.gov.ru/storage/mediabank/HOKNtZra/i_ipc.xlsx",
-  access_date = Sys.Date()
+  access_date = Sys.Date(),
+  sheet = 1
 )
 }
 \arguments{
 \item{path_to_source}{name of the original I_ipc.xls file}
 
 \item{access_date}{date of access is appended to every observation}
+
+\item{sheet}{number of sheet, 1 by default}
 }
 \value{
 tibble

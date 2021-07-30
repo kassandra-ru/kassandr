@@ -6,13 +6,16 @@
 \usage{
 convert_tab6b_xls(
   path_to_source = "http://www.gks.ru/free_doc/new_site/vvp/kv/tab6b.xls",
-  access_date = Sys.Date()
+  access_date = Sys.Date(),
+  sheet = 1
 )
 }
 \arguments{
 \item{path_to_source}{name of the original tab6b.xls file}
 
 \item{access_date}{date of access is appended to every observation}
+
+\item{sheet}{number of sheet, 1 by default}
 }
 \value{
 tibble

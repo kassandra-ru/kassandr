@@ -7,13 +7,16 @@
 convert_trade_xls(
  
     path_to_source = "https://www.cbr.ru/vfs/statistics/credit_statistics/trade/trade.xls",
-  access_date = Sys.Date()
+  access_date = Sys.Date(),
+  sheet = 1
 )
 }
 \arguments{
 \item{path_to_source}{name of the original trade.xls file}
 
 \item{access_date}{date of access is appended to every observation}
+
+\item{sheet}{number of sheet, 1 by default}
 }
 \value{
 tibble
