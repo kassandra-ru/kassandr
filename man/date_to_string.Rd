@@ -4,12 +4,14 @@
 \alias{date_to_string}
 \title{Converts strings into dates in Russian language}
 \usage{
-date_to_string(date, freq = 12)
+date_to_string(date, freq = 12, encoding = "UTF-8")
 }
 \arguments{
 \item{date}{date in the following format: "2019-02-23"}
 
 \item{freq}{equal to 4 for quarters, equal to 12 for months}
+
+\item{encoding}{encoding, 'UTF-8' by default, try 'windows-1251' on windows :)}
 }
 \value{
 date in the form of the string

@@ -1,6 +1,6 @@
 Package: kassandr
 Title: Functions to Forecast Russian Macro Data in Kassandra Project
-Version: 0.0.4.00
+Version: 0.0.5.00
 Authors@R: c(person("Boris", "Demeshev", email = "boris.demeshev@gmail.com", role = c("aut", "cre")), 
              person("Oxana", "Malakhovskaya", email = "oxana.malakhovskaya@gmail.com", role = "aut"))
 Description: Automatically load data. The goal is to make consice and easy to replicate forecasts.
@@ -29,6 +29,7 @@ Imports:
     docxtractr (>= 0.6.0),
     tidyselect (>= 0.2.4),
     cbr (>= 0.2),
-    methods (>= 3.0.0)
+    methods (>= 3.0.0),
+    stringi (>= 1.5.0)
 Remotes: bdemeshev/cbr
 RoxygenNote: 7.1.1
