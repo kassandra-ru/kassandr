@@ -23,6 +23,8 @@ Converts strings into dates in Russian language
 Converts strings into dates in Russian language
 }
 \examples{
-date <- c("2019-02-23") # date <- c("2019-02-23", "2011-01-07")
+date <- c("2019-02-23")
 date_to_string(date, freq = 12)
+date <- c("2019-02-23", "2011-01-07")
+date_to_string(date, freq = 12, encoding = 'windows-1251')
 }
