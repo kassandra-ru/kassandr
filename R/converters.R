@@ -498,21 +498,27 @@ convert_ind_okved2_xlsx = function(path_to_source =
 #' \donttest{
 #' # ind = convert_ind_okved2_xls()
 #' # new link https://rosstat.gov.ru/storage/mediabank/BYkjy3Bn/Ind_sub-2018.xls
+#' # new link (26 Dec 2021): https://rosstat.gov.ru/storage/mediabank/ind_sub_2018.xls
 #' }
 #'
 convert_ind_okved2_xls_one_sheet = function(path_to_source =
-                                  "https://rosstat.gov.ru/storage/mediabank/BYkjy3Bn/Ind_sub-2018.xls",
+                                  "https://rosstat.gov.ru/storage/mediabank/ind_sub_2018.xls",
                                   access_date = Sys.Date(), sheet = 1, variable_name = 'ind_prod') {
 
   # data
   indprod_data = rio::import(path_to_source, skip = 2, sheet = sheet)
-  indprod_vector = t(indprod_data[2, 3:ncol(indprod_data)])
+  indprod_vector = t(indprod_data[2, 2:ncol(indprod_data)])
 
   # automatic date detection
-  date_string = rownames(indprod_vector)[1]
-  date_parts = stringr::str_match(date_string, '^([а-яА-я]+) ([0-9]+)')
-  first_obs_year = as.numeric(date_parts[3])
-  first_obs_month = get_month(date_parts[2])
+  # @DEPRECATED
+  #date_string = rownames(indprod_vector)[1]
+  #date_parts = stringr::str_match(date_string, '^([а-яА-я]+) ([0-9]+)')
+  #first_obs_year = as.numeric(date_parts[3])
+  #first_obs_month = get_month(date_parts[2])
+  
+  year_string = substr(rownames(indprod_vector)[1], 1, 4)
+  first_obs_year = as.numeric(year_string)
+  first_obs_month = get_month(indprod_data[1, 2])
 
   # create series
   indprod_ts = stats::ts(indprod_vector,
@@ -540,15 +546,16 @@ convert_ind_okved2_xls_one_sheet = function(path_to_source =
 #' \donttest{
 #' # ind = convert_ind_okved2_xls()
 #' # new link https://rosstat.gov.ru/storage/mediabank/BYkjy3Bn/Ind_sub-2018.xls
+#' # new link (26 Dec 2021): https://rosstat.gov.ru/storage/mediabank/ind_sub_2018.xls
 #' }
 #'
 convert_ind_okved2_xls = function(path_to_source =
-                                              "https://rosstat.gov.ru/storage/mediabank/BYkjy3Bn/Ind_sub-2018.xls",
+                                              "https://rosstat.gov.ru/storage/mediabank/ind_sub_2018.xls",
                                             access_date = Sys.Date()) {
 
-  sheet_1 = convert_ind_okved2_xls_one_sheet(path_to_source, access_date, sheet = 1,
+  sheet_1 = convert_ind_okved2_xls_one_sheet(path_to_source, access_date, sheet = 3,
                                              variable_name = 'ind_prod_perc_prev_month')
-  sheet_2 = convert_ind_okved2_xls_one_sheet(path_to_source, access_date, sheet = 2,
+  sheet_2 = convert_ind_okved2_xls_one_sheet(path_to_source, access_date, sheet = 1,
                                              variable_name = 'ind_prod_perc_corresp_month')
 
   indprod_tsibble = dplyr::full_join(sheet_1, sheet_2, by = c('date', 'access_date'))
